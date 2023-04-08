@@ -8,24 +8,41 @@ const createStore = redux.legacy_createStore;
 const applyMiddleware = redux.applyMiddleware;
 const logger = reduxLogger.createLogger();
 
+/** Type definations */
+interface User {
+    id: number,
+    name: string,
+    username: string
+}
+interface Action {
+    type: string,
+    payload: any
+}
+interface State {
+    isLoading: boolean
+    users: Array<User> | [],
+    error: string 
+}
+
 /** Action constances */
 const FETCH_USERS_REQUEST = 'FETCH_USERS_REQUEST';
 const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
 const FETCH_USERS_FAILURE = 'FETCH_USERS_FAILURE';
 
 /** Action creators */
-const fetchUsersRequest = () => {
+const fetchUsersRequest = (): Action  => {
     return {
         type: FETCH_USERS_REQUEST,
+        payload: ''
     }
 }
-const fetchUsersSuccess = users => {
+const fetchUsersSuccess = (users: Array<User>): Action => {
     return {
         type: FETCH_USERS_SUCCESS,
         payload: users
     }
 }
-const fetchUsersFailure = error => {
+const fetchUsersFailure = (error: string): Action => {
     return {
         type: FETCH_USERS_FAILURE,
         payload: error
@@ -33,14 +50,14 @@ const fetchUsersFailure = error => {
 }
 
 /** Store initial state */
-const initialState = {
+const initialState: State = {
     isLoading: false,
     users: [],
     error: ''
 }
 
 /** Fetch users reducer */
-const reducer = (state = initialState, action) => {
+const reducer = (state: State = initialState, action: Action): State => {
     switch(action.type){
         case FETCH_USERS_REQUEST: 
             return {
@@ -71,16 +88,17 @@ const store = createStore(reducer, applyMiddleware(thunkMiddleware, logger));
 console.log(store.getState());
 
 const fetchUsers = () => {
-    return async (dispatch) => {
+    return async (dispatch: typeof store.dispatch ) => {
         try {
             dispatch(fetchUsersRequest());
             const response = await axios.get('https://jsonplaceholder.typicode.com/users');
-            const users = response.data.map(user => user.id);
+            const users = response.data.map((user: User) => user.id);
             dispatch(fetchUsersSuccess(users))
         }
-        catch(error){
+        catch(error: any){
             //Register error message of the request error.mesage
-            dispatch(fetchUsersFailure(error.message));
+            const errorMsg = error.message;
+            dispatch(fetchUsersFailure(errorMsg));
         }
     }
 }
