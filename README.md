@@ -13,8 +13,8 @@ This project aims at explaining the key concepts of Redux as a stand only librar
 * clone the project `git clone https://github.com/malishben360/node_redux.git`
 * move to the root folder `cd node_redux`
 * install all neccessary dependencies `npm install`
-* start the non async version `nodemon index.js`
-* start the async version `nodemon reduxAsync.js`
+* start the non async version run `nodemon`
+* start the async version: change nodemon.json line 5 from "exec": "npx ts-node ./src/index.ts" to "exec": "npx ts-node ./src/reduxAsync.ts" and run `nodemon`
 
 ## Out Comes
 * How to create Redux store using [legacy_createStore] function.
